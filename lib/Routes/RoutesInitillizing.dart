@@ -8,7 +8,7 @@ class Routes {
   static Route<dynamic>generateRoute(RouteSettings settings){
     switch(settings.name){
       case RoutesName.homeScreen:
-        return MaterialPageRoute(builder: (context) => HomScreen());
+        return MaterialPageRoute(builder: (context) => HomeScreen());
 
 
       default:

@@ -7,20 +7,17 @@ import 'package:weather_apis/Model/Weather_Api_Model.dart';
 
 class WeatherRepository{
 
-  Future<WeatherApiModel>fetch()async{
-    String url = 'https://api.openweathermap.org/data/3.0/onecall?lat=40.7108954265027&lon=-74.01161483217898&appid=005e993f8012d36439ab721c672d9d19&units=metric&exclude=minutely';
+  Future<WeatherApiModel> fetch() async {
+    String url = 'https://api.openweathermap.org/data/3.0/onecall?lat=40.7108954265027&lon=-74.01161483217898&appid=005e993f8012d36439ab721c672d9d19';
 
-    final response =await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url));
 
-    if(kDebugMode){
-      print(response.body);
-    }
-
-    if(response.statusCode == 200){
+    if (response.statusCode == 200) {
       final body = jsonDecode(response.body);
+      print('API Response: $body'); // Debug print
       return WeatherApiModel.fromJson(body);
-    }else{
-      throw Exception('Error');
+    } else {
+      throw Exception('Error fetching weather data');
     }
   }
 
