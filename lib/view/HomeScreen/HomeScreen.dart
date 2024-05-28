@@ -14,7 +14,7 @@ class HomScreen extends StatefulWidget {
 
 class _HomScreenState extends State<HomScreen> {
 
-  WeatherViewModel weatherViewModel = WeatherViewModel();
+   WeatherViewModel weatherViewModel = WeatherViewModel();
   final format = DateFormat( 'MMMM dd,yyyy');
 
   @override
@@ -22,25 +22,22 @@ class _HomScreenState extends State<HomScreen> {
     final height = MediaQuery.sizeOf(context).height * 1;
     final width = MediaQuery.sizeOf(context).width * 1;
     return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
-        child: FutureBuilder<weatherApiModel>(future:weatherViewModel.fetchWeatherApi() , builder: (BuildContext context,snapshot){
-               if(snapshot.connectionState == ConnectionState.waiting){
-                 return const  Center(child: SpinKitChasingDots(color: Colors.blue,size: 40,),);
-               }else{
-                 return ListView.builder(
-                     itemCount: snapshot.data!.timezone!.length,
-                     itemBuilder: (context,index){
+        child: FutureBuilder<WeatherApiModel>(future:weatherViewModel.fetch() , builder:(BuildContext context, snapshot){
+          if(snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: SpinKitFadingCircle(color: Colors.blue,),);
+          } else{
+            return Column(
+              children: [
+                Text(snapshot.data!.timezone.toString())
+              ],
+            );
+          }
+        })
 
-                   return Column(
-                     children: [
-                       SizedBox(height: height * .04,),
 
-                     ],
-                   );
-
-                 });
-               }
-            }),
       )
         
     );

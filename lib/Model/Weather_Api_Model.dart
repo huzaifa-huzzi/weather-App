@@ -1,4 +1,4 @@
-class weatherApiModel {
+class WeatherApiModel {
   double? lat;
   double? lon;
   String? timezone;
@@ -6,19 +6,17 @@ class weatherApiModel {
   Current? current;
   List<Hourly>? hourly;
   List<Daily>? daily;
-  List<Alerts>? alerts;
 
-  weatherApiModel(
+  WeatherApiModel(
       {this.lat,
         this.lon,
         this.timezone,
         this.timezoneOffset,
         this.current,
         this.hourly,
-        this.daily,
-        this.alerts});
+        this.daily});
 
-  weatherApiModel.fromJson(Map<String, dynamic> json) {
+  WeatherApiModel.fromJson(Map<String, dynamic> json) {
     lat = json['lat'];
     lon = json['lon'];
     timezone = json['timezone'];
@@ -35,12 +33,6 @@ class weatherApiModel {
       daily = <Daily>[];
       json['daily'].forEach((v) {
         daily!.add(new Daily.fromJson(v));
-      });
-    }
-    if (json['alerts'] != null) {
-      alerts = <Alerts>[];
-      json['alerts'].forEach((v) {
-        alerts!.add(new Alerts.fromJson(v));
       });
     }
   }
@@ -60,9 +52,6 @@ class weatherApiModel {
     if (this.daily != null) {
       data['daily'] = this.daily!.map((v) => v.toJson()).toList();
     }
-    if (this.alerts != null) {
-      data['alerts'] = this.alerts!.map((v) => v.toJson()).toList();
-    }
     return data;
   }
 }
@@ -81,7 +70,6 @@ class Current {
   int? visibility;
   double? windSpeed;
   int? windDeg;
-  double? windGust;
   List<Weather>? weather;
 
   Current(
@@ -98,7 +86,6 @@ class Current {
         this.visibility,
         this.windSpeed,
         this.windDeg,
-        this.windGust,
         this.weather});
 
   Current.fromJson(Map<String, dynamic> json) {
@@ -115,7 +102,6 @@ class Current {
     visibility = json['visibility'];
     windSpeed = json['wind_speed'];
     windDeg = json['wind_deg'];
-    windGust = json['wind_gust'];
     if (json['weather'] != null) {
       weather = <Weather>[];
       json['weather'].forEach((v) {
@@ -139,7 +125,6 @@ class Current {
     data['visibility'] = this.visibility;
     data['wind_speed'] = this.windSpeed;
     data['wind_deg'] = this.windDeg;
-    data['wind_gust'] = this.windGust;
     if (this.weather != null) {
       data['weather'] = this.weather!.map((v) => v.toJson()).toList();
     }
@@ -428,43 +413,6 @@ class FeelsLike {
     data['night'] = this.night;
     data['eve'] = this.eve;
     data['morn'] = this.morn;
-    return data;
-  }
-}
-
-class Alerts {
-  String? senderName;
-  String? event;
-  int? start;
-  int? end;
-  String? description;
-  List<String>? tags;
-
-  Alerts(
-      {this.senderName,
-        this.event,
-        this.start,
-        this.end,
-        this.description,
-        this.tags});
-
-  Alerts.fromJson(Map<String, dynamic> json) {
-    senderName = json['sender_name'];
-    event = json['event'];
-    start = json['start'];
-    end = json['end'];
-    description = json['description'];
-    tags = json['tags'].cast<String>();
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sender_name'] = this.senderName;
-    data['event'] = this.event;
-    data['start'] = this.start;
-    data['end'] = this.end;
-    data['description'] = this.description;
-    data['tags'] = this.tags;
     return data;
   }
 }
