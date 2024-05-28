@@ -34,7 +34,7 @@ class _HomScreenState extends State<HomScreen> {
                    return Column(
                      children: [
                        SizedBox(height: height * .04,),
-                       Text(snapshot.data!.timezone.toString()),
+
                      ],
                    );
 
