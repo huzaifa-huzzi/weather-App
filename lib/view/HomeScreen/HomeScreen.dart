@@ -33,7 +33,7 @@ class _HomeScreenState extends State<HomeScreen> {
             }  else {
               return Column(
                 children: [
-              Text(snapshot.data!.timezone.toString()),
+              Text(snapshot.data!.timezone ?? ""),
 
             ],
               );
