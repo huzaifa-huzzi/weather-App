@@ -7,7 +7,7 @@ class WeatherRepository {
 
 
   Future<WeatherApiModel> fetch() async {
-    String url = 'https://api.openweathermap.org/data/3.0/onecall?lat=40.7108954265027&lon=-74.01161483217898&appid=005e993f8012d36439ab721c672d9d19';
+    String url = 'https://api.openweathermap.org/data/3.0/onecall?lat=33.7846143068728&lon=72.72223940755853&appid=005e993f8012d36439ab721c672d9d19&units=metric&exclude=minutely';
 
     final response = await http.get(Uri.parse(url));
 

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:weather_apis/Model/Weather_Api_Model.dart';
 import 'package:weather_apis/view_model/Weather_view_model.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -12,11 +12,14 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final format = DateFormat('MMMM dd, yyyy');
+  // Initialize WeatherViewModel
   WeatherViewModel weatherViewModel = WeatherViewModel();
+
+
 
   @override
   Widget build(BuildContext context) {
+    // Get screen size
     final height = MediaQuery.of(context).size.height;
     final width = MediaQuery.of(context).size.width;
 
@@ -25,17 +28,26 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: FutureBuilder<WeatherApiModel>(
           future: weatherViewModel.fetch(),
-          builder: (BuildContext context,  snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<WeatherApiModel> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
+
+              return  const Center(
                 child: SpinKitFadingCircle(color: Colors.blue),
               );
-            }  else {
+            } else if (snapshot.hasError) {
+              // Handle error case
+              return Center(
+                child: Text('Error: ${snapshot.error}'),
+              );
+            } else  {
+              String cityName = snapshot.data!.timezone?.split('/')?.last ?? '';
               return Column(
                 children: [
-              Text(snapshot.data!.timezone ?? ""),
+                  Container(
+                    child: Text(cityName),
+                  ),
 
-            ],
+                ],
               );
             }
           },
