@@ -190,6 +190,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                          var weatherIcon = hourlyData.weather?.first.icon ?? '';
                                  return  Container(
                                    width: 80,
+                                   margin:const  EdgeInsets.only(left: 20,right:  5),
                                    decoration: BoxDecoration(
                                        borderRadius: BorderRadius.circular(12),
                                        boxShadow:[
