@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
-import 'package:weather_apis/Current/Current.dart';
 import 'package:weather_apis/Model/Weather_Api_Model.dart';
 import 'package:weather_apis/Utils/Colors.dart';
 import 'package:weather_apis/view_model/Weather_view_model.dart';
@@ -28,8 +27,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return formattedTime;
   }
 
-  //card index
-  bool _isTapped = false;
+  //container index
+  int selectedIndex = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -177,57 +176,59 @@ class _HomeScreenState extends State<HomeScreen> {
                               Container(
                                 height: 150,
                                 padding: const EdgeInsets.only(top: 10,bottom: 10),
-                                child:GestureDetector(
-                                  onTap: (){
-                                    setState(() {
-                                      _isTapped = !_isTapped;
-                                    });
-                                  },
-                                   child: ListView.builder(scrollDirection: Axis.horizontal,
+                                child: ListView.builder(scrollDirection: Axis.horizontal,
                                    itemCount:snapshot.data!.hourly!.length > 12 ?  12 : snapshot.data!.hourly!.length ,
                                        itemBuilder: (context,index){
                                          var hourlyData = snapshot.data!.hourly![index];
                                          var weatherIcon = hourlyData.weather?.first.icon ?? '';
-                                 return  Container(
-                                   width: 80,
-                                   margin:const  EdgeInsets.only(left: 20,right:  5),
-                                   decoration: BoxDecoration(
-                                       borderRadius: BorderRadius.circular(12),
-                                       boxShadow:[
-                                         BoxShadow(offset: const  Offset(0.5,0),blurRadius: 30,spreadRadius: 1,color: CustomColors.dividerLine.withAlpha(150))
-                                       ],
-                                       gradient:const  LinearGradient(colors: [
-                                         CustomColors.firstGradientColor,
-                                         CustomColors.secondGradientColor
-                                       ])
-                                   ),
-                                   child:Column(
-                                     children: [
-                                       SizedBox(height: height * .02,),
-                                       Text(
-                                         snapshot.data!.hourly![index].dt != null
-                                             ? getTime(snapshot.data!.hourly![index].dt!, index * 30)
-                                             : 'N/A',
+                                         bool isSelected = selectedIndex == index;
+                                 return  GestureDetector(
+                                   onTap: (){
+                                     setState(() {
+                                       selectedIndex = index;
+                                     });
+                                   },
+                                   child: Container(
+                                     width: 80,
+                                     margin:const  EdgeInsets.only(left: 20,right:  5),
+                                     decoration: BoxDecoration(
+                                         borderRadius: BorderRadius.circular(12),
+                                         boxShadow:[
+                                           BoxShadow(offset: const  Offset(0.5,0),blurRadius: 30,spreadRadius: 1,color: CustomColors.dividerLine.withAlpha(150))
+                                         ],
+                                       gradient: LinearGradient(
+                                         colors: isSelected
+                                             ? [CustomColors.firstGradientColor,CustomColors.secondGradientColor]
+                                             : [CustomColors.dividerLine,CustomColors.dividerLine.withAlpha(150)],
                                        ),
-                                       Container(
-                                         margin: const EdgeInsets.all(5),
-                                         child: Image.asset(
-                                           'assets/weather/$weatherIcon.png'
-                                           ,
-                                           width: 40,
-                                           height: 40,
+                                     ),
+                                     child:Column(
+                                       children: [
+                                         SizedBox(height: height * .02,),
+                                         Text(
+                                           snapshot.data!.hourly![index].dt != null
+                                               ? getTime(snapshot.data!.hourly![index].dt!, index * 30)
+                                               : 'N/A',
                                          ),
-                                       ),
-                                       SizedBox(height: height * .01,),
-                                       Text( '${snapshot.data!.hourly![index].temp.toString()}\u00B0'),
+                                         Container(
+                                           margin: const EdgeInsets.all(5),
+                                           child: Image.asset(
+                                             'assets/weather/$weatherIcon.png'
+                                             ,
+                                             width: 40,
+                                             height: 40,
+                                           ),
+                                         ),
+                                         SizedBox(height: height * .01,),
+                                         Text( '${snapshot.data!.hourly![index].temp.toString()}\u00B0'),
 
 
-                                     ],
+                                       ],
+                                     ),
                                    ),
                                  );
 
                                     }),
-                                ),
                               ),
                             ],
                           )
