@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:weather_apis/Model/Weather_Api_Model.dart';
 import 'package:weather_apis/Utils/Colors.dart';
 import 'package:weather_apis/view_model/Weather_view_model.dart';
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,10 +14,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   WeatherViewModel weatherViewModel = WeatherViewModel();
   String currentDate = DateFormat('MMMM dd, yyyy').format(DateTime.now());
-  int selectedIndex = 0;
 
   // Time into Readable Human Time in it.
   String getTime(int timeStamp, int minutesInterval) {
@@ -25,7 +24,6 @@ class _HomeScreenState extends State<HomeScreen> {
     String formattedTime = DateFormat('jm').format(time);
     return formattedTime;
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -166,61 +164,10 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(
                         children: [
                           const Text('Today', style: TextStyle(fontSize: 18),),
-                          Container(
-                            height: 150,
-                            padding: const EdgeInsets.only(top: 10, bottom: 10),
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: snapshot.data!.hourly!.length > 12 ? 12 : snapshot.data!.hourly!.length,
-                              itemBuilder: (context, index) {
-                                var hourlyData = snapshot.data!.hourly![index];
-                                var weatherIcon = hourlyData.weather?.first.icon ?? '';
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      selectedIndex = index;
-                                    });
-                                  },
-                                  child: AnimatedContainer(
-                                    duration: Duration(milliseconds: 300),
-                                    width: 80,
-                                    margin: const EdgeInsets.only(left: 20, right: 5),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          offset: const Offset(0.5, 0),
-                                          blurRadius: 30,
-                                          spreadRadius: 1,
-                                          color: selectedIndex == index ? CustomColors.dividerLine.withAlpha(150) : Colors.transparent,
-                                        ),
-                                      ],
-                                      gradient: LinearGradient(
-                                        colors: selectedIndex == index ? [CustomColors.firstGradientColor, CustomColors.secondGradientColor] : [CustomColors.dividerLine, CustomColors.dividerLine.withAlpha(150)],
-                                      ),
-                                    ),
-                                    child: Column(
-                                      children: [
-                                        SizedBox(height: height * .02,),
-                                        Text(
-                                          hourlyData.dt != null ? getTime(hourlyData.dt!, index * 30) : 'N/A',
-                                        ),
-                                        Container(
-                                          margin: const EdgeInsets.all(5),
-                                          child: Image.asset(
-                                            'assets/weather/$weatherIcon.png',
-                                            width: 40,
-                                            height: 40,
-                                          ),
-                                        ),
-                                        SizedBox(height: height * .01,),
-                                        Text('${hourlyData.temp.toString()}\u00B0'),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
+                          HourlyWeatherList(
+                            snapshot: snapshot,
+                            height: height,
+                            getTime: getTime,
                           ),
                         ],
                       )
@@ -238,3 +185,81 @@ class _HomeScreenState extends State<HomeScreen> {
 
 
 
+class HourlyWeatherList extends StatefulWidget {
+  final AsyncSnapshot snapshot;
+  final double height;
+  final String Function(int, int) getTime;
+
+  HourlyWeatherList({
+    required this.snapshot,
+    required this.height,
+    required this.getTime,
+  });
+
+  @override
+  _HourlyWeatherListState createState() => _HourlyWeatherListState();
+}
+
+class _HourlyWeatherListState extends State<HourlyWeatherList> {
+  int selectedIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 150,
+      padding: const EdgeInsets.only(top: 10, bottom: 10),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: widget.snapshot.data!.hourly!.length > 12 ? 12 : widget.snapshot.data!.hourly!.length,
+        itemBuilder: (context, index) {
+          var hourlyData = widget.snapshot.data!.hourly![index];
+          var weatherIcon = hourlyData.weather?.first.icon ?? '';
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedIndex = index;
+              });
+            },
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              width: 80,
+              margin: const EdgeInsets.only(left: 20, right: 5),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: [
+                  BoxShadow(
+                    offset: const Offset(0.5, 0),
+                    blurRadius: 30,
+                    spreadRadius: 1,
+                    color: selectedIndex == index ? CustomColors.dividerLine.withAlpha(150) : Colors.transparent,
+                  ),
+                ],
+                gradient: LinearGradient(
+                  colors: selectedIndex == index ? [CustomColors.firstGradientColor, CustomColors.secondGradientColor] : [CustomColors.dividerLine, CustomColors.dividerLine.withAlpha(150)],
+                ),
+              ),
+              child: Column(
+                children: [
+                  SizedBox(height: widget.height * .02,),
+                  Text(
+                    hourlyData.dt != null ? widget.getTime(hourlyData.dt!, index * 30) : 'N/A',
+                  ),
+                  Container(
+                    margin: const EdgeInsets.all(5),
+                    child: Image.asset(
+                      'assets/weather/$weatherIcon.png',
+                      width: 40,
+                      height: 40,
+                    ),
+                  ),
+                  SizedBox(height: widget.height * .01,),
+                  Text('${hourlyData.temp.toString()}\u00B0'),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
