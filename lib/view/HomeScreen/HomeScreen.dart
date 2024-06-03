@@ -226,7 +226,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                child: Image.asset( 'assets/weather/$weatherIcons.png',),
                                              ),
                                              SizedBox(width: width * .05,),
-                                             Text('${weatherTemp}\u00B0 /${weatherTempTwo}\u00B0  '),
+                                             Text('$weatherTemp\u00B0 /$weatherTempTwo\u00B0  '),
                                              Container(
                                                height: 1,
                                                color: CustomColors.dividerLine,
@@ -268,7 +268,7 @@ class HourlyWeatherList extends StatefulWidget {
   final double height;
   final String Function(int, int) getTime;
 
-  HourlyWeatherList({super.key,
+  const HourlyWeatherList({super.key,
     required this.snapshot,
     required this.height,
     required this.getTime,
