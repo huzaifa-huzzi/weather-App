@@ -25,6 +25,15 @@ class _HomeScreenState extends State<HomeScreen> {
     return formattedTime;
   }
 
+  // Time into the Days
+  String getDay(final day){
+    DateTime time = DateTime.fromMillisecondsSinceEpoch(day * 1000);
+    final formattedDay = DateFormat('EEE ').format(time);
+
+    return formattedDay;
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.of(context).size.height;
@@ -44,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Text('Error: ${snapshot.error}'),
               );
             } else {
-              String cityName = snapshot.data!.timezone?.split('/')?.last ?? '';
+              String cityName = snapshot.data!.timezone?.split('/').last ?? '';
               var weatherIcon = snapshot.data!.current!.weather?.first.icon ?? '';
               var weatherDescription = snapshot.data!.current!.weather?.first.description ?? '';
 
@@ -164,13 +173,82 @@ class _HomeScreenState extends State<HomeScreen> {
                       Column(
                         children: [
                           const Text('Today', style: TextStyle(fontSize: 18),),
+                          SizedBox(height: height * .03,),
                           HourlyWeatherList(
                             snapshot: snapshot,
                             height: height,
                             getTime: getTime,
                           ),
                         ],
+                      ),
+                      SizedBox(height: height * .04,),
+                      Container(
+                        height: 400,
+                        margin: const EdgeInsets.all(20),
+                        padding:const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: CustomColors.dividerLine.withAlpha(150),
+                          borderRadius: BorderRadius.circular(20)
+                        ),
+                        child:Column(
+                          children: [
+                            Container(
+                              alignment: Alignment.topLeft,
+                              margin:const  EdgeInsets.only(bottom: 10),
+                              child:const  Text('Next Days',style: TextStyle(color: CustomColors.textColorBlack,fontSize: 17),),
+                            ),
+                            SizedBox(height: height * .02,),
+                            SizedBox(
+                              height: 300,
+                              child: ListView.builder(
+                                scrollDirection: Axis.vertical,
+                                  itemCount: snapshot.data!.daily!.length > 7 ? 7:snapshot.data!.daily!.length,
+                                  itemBuilder: (context,index){
+                                    var weatherIcons = snapshot.data!.daily![index].weather?.first.icon ?? '';
+                                    var weatherTemp = snapshot.data!.daily![index].temp?.max ?? '';
+                                    var weatherTempTwo = snapshot.data!.daily![index].temp?.min ?? '';
+
+                                    return Column(
+                                    children: [
+                                       Container(
+                                         height:60,
+                                         padding:const EdgeInsets.only(left: 10,right: 10) ,
+                                         child:Row(
+                                           mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                           children: [
+                                             SizedBox(
+                                               width: 80,
+                                               child: Text(getDay(snapshot.data!.daily![index].dt),style:const  TextStyle(color: CustomColors.textColorBlack,fontSize: 14),),
+                                             ),
+                                             SizedBox(
+                                               height: 30,
+                                               width: 30,
+                                               child: Image.asset( 'assets/weather/$weatherIcons.png',),
+                                             ),
+                                             SizedBox(width: width * .05,),
+                                             Text('${weatherTemp}\u00B0 /${weatherTempTwo}\u00B0  '),
+                                             Container(
+                                               height: 1,
+                                               color: CustomColors.dividerLine,
+                                             )
+
+                                             
+
+                                           ],
+                                         )
+
+
+                                       )
+                                    ],
+                                  );
+
+                              }),
+                            ),
+                            
+                          ],
+                        ) ,
                       )
+
                     ],
                   ),
                 ],
@@ -190,7 +268,7 @@ class HourlyWeatherList extends StatefulWidget {
   final double height;
   final String Function(int, int) getTime;
 
-  HourlyWeatherList({
+  HourlyWeatherList({super.key,
     required this.snapshot,
     required this.height,
     required this.getTime,
