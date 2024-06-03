@@ -16,7 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   WeatherViewModel weatherViewModel = WeatherViewModel();
   String currentDate = DateFormat('MMMM dd, yyyy').format(DateTime.now());
-  int selectedIndex = -1; // Initialize with -1 to represent no selection
+  int selectedIndex = 0;
 
   // Time into Readable Human Time in it.
   String getTime(int timeStamp, int minutesInterval) {
@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
           future: weatherViewModel.fetch(),
           builder: (BuildContext context, AsyncSnapshot<WeatherApiModel> snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(
+              return const Center(
                 child: SpinKitFadingCircle(color: Colors.blue),
               );
             } else if (snapshot.hasError) {
@@ -181,13 +181,19 @@ class _HomeScreenState extends State<HomeScreen> {
                                       selectedIndex = index;
                                     });
                                   },
-                                  child: Container(
+                                  child: AnimatedContainer(
+                                    duration: Duration(milliseconds: 300),
                                     width: 80,
                                     margin: const EdgeInsets.only(left: 20, right: 5),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(12),
                                       boxShadow: [
-                                        BoxShadow(offset: const Offset(0.5, 0), blurRadius: 30, spreadRadius: 1, color: selectedIndex == index ? CustomColors.dividerLine.withAlpha(150) : Colors.transparent),
+                                        BoxShadow(
+                                          offset: const Offset(0.5, 0),
+                                          blurRadius: 30,
+                                          spreadRadius: 1,
+                                          color: selectedIndex == index ? CustomColors.dividerLine.withAlpha(150) : Colors.transparent,
+                                        ),
                                       ],
                                       gradient: LinearGradient(
                                         colors: selectedIndex == index ? [CustomColors.firstGradientColor, CustomColors.secondGradientColor] : [CustomColors.dividerLine, CustomColors.dividerLine.withAlpha(150)],
@@ -197,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       children: [
                                         SizedBox(height: height * .02,),
                                         Text(
-                                          snapshot.data!.hourly![index].dt != null ? getTime(snapshot.data!.hourly![index].dt!, index * 30) : 'N/A',
+                                          hourlyData.dt != null ? getTime(hourlyData.dt!, index * 30) : 'N/A',
                                         ),
                                         Container(
                                           margin: const EdgeInsets.all(5),
@@ -208,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ),
                                         SizedBox(height: height * .01,),
-                                        Text('${snapshot.data!.hourly![index].temp.toString()}\u00B0'),
+                                        Text('${hourlyData.temp.toString()}\u00B0'),
                                       ],
                                     ),
                                   ),
