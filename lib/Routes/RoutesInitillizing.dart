@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:weather_apis/Routes/Routes_name.dart';
 import 'package:weather_apis/view/HomeScreen/HomeScreen.dart';
+import 'package:weather_apis/view/Main%20Screen/MainScree.dart';
 
 
 class Routes {
@@ -9,6 +10,10 @@ class Routes {
     switch(settings.name){
       case RoutesName.homeScreen:
         return MaterialPageRoute(builder: (context) =>const  HomeScreen());
+
+      case RoutesName.mainScreen:
+        return MaterialPageRoute(builder: (context) =>const  MainScreen());
+
 
 
       default:

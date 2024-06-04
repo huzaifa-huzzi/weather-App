@@ -20,7 +20,7 @@ class _MyAppState extends State<MyApp> {
     return   const MaterialApp(
      title: "Weather App",
       debugShowCheckedModeBanner: false,
-      initialRoute: RoutesName.homeScreen,
+      initialRoute: RoutesName.mainScreen,
       onGenerateRoute: Routes.generateRoute,
     );
   }
