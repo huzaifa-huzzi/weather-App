@@ -43,6 +43,7 @@ dependencies:
   intl:
   google_fonts: ^6.2.1
   fluttertoast: ^8.2.5
+  sleek_circular_slider: ^2.0.1
 
 dev_dependencies:
   flutter_test:
